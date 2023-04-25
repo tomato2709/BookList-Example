@@ -1,26 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/Home';
+import LoginPage from './pages/Login';
+import { initializeApp } from 'firebase/app';
+import { config } from './config/config';
+import AuthRoute from './components/AuthRoute';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+initializeApp(config.firebaseConfig);
+const app = initializeApp(config.firebaseConfig);
+export const db = getFirestore(app);
+export const auth = getAuth();
+
+export interface IApplicationProps {}
+
+const App: React.FunctionComponent<IApplicationProps> = (props) => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        <AuthRoute>
+                                <HomePage />
+                        </AuthRoute>
+                    }
+                />
+                <Route path="/login" element={<LoginPage />} />
+            </Routes>
+        </BrowserRouter>
+    );
+};
 
 export default App;
